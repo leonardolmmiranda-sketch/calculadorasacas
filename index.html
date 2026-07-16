@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Sacas — MTM | Mercado Libre</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --yellow: #FFF8DC;
+  --yellow-mid: #F5E97A;
+  --yellow-dark: #E8D98A;
+  --blue: #2C3E6B;
+  --blue-dark: #1E2D52;
+  --blue-deeper: #15203D;
+  --blue-light: #EEF2FF;
+  --blue-mid: #3D5490;
+  --text: #333333;
+  --gray: #717171;
+  --gray-light: #F5F5F5;
+  --border: #EBEBEB;
+  --white: #FFFFFF;
+  --green: #2E7D5E;
+  --green-dark: #1F5C44;
+  --green-light: #E8F5EE;
+  --purple: #5B3AA8;
+  --purple-light: #EEE8FA;
+  --success-bg: #E8F5EE;
+  --success-text: #1F5C44;
+  --warning-bg: #FFF3CC;
+  --warning-text: #7A5200;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: #EDEAE3;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--yellow);
+  height: 60px; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid var(--yellow-dark);
+}
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-mark { width: 36px; height: 36px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.logo-mark svg { width: 20px; height: 20px; }
+.logo-name { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 17px; color: var(--blue-deeper); }
+.logo-sub { font-size: 10px; font-weight: 600; color: var(--blue-dark); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-pill {
+  font-size: 12px; font-weight: 600; color: var(--blue-deeper);
+  text-decoration: none; background: rgba(255,255,255,0.7);
+  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--yellow-dark);
+  transition: background .15s; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.header-pill:hover { background: white; }
+.badge-header {
+  background: var(--blue); color: var(--yellow-mid);
+  font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 20px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--yellow);
+  padding: 2rem 2rem 1.75rem;
+  border-bottom: 3px solid var(--yellow-dark);
+}
+.page-header-inner { max-width: 960px; margin: 0 auto; }
+.page-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--blue); background: rgba(44,62,107,0.08); padding: 4px 14px;
+  border-radius: 20px; margin-bottom: 10px;
+}
+.page-title {
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(22px, 4vw, 32px); font-weight: 900;
+  color: var(--blue-deeper); letter-spacing: -0.5px; line-height: 1.2;
+  margin-bottom: 6px;
+}
+.page-subtitle {
+  font-size: 14px; color: var(--blue-dark); opacity: 0.75;
+}
+
+/* ── MAIN ── */
+main { flex: 1; }
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* ── CARD ── */
+.card {
+  background: var(--white); border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(44,62,107,0.07);
+  padding: 1.5rem 1.75rem; margin-bottom: 1.25rem;
+}
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--blue-deeper); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-label::before {
+  content: ''; display: inline-block; width: 3px; height: 16px;
+  background: var(--yellow-mid); border-radius: 2px; flex-shrink: 0;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── INPUTS ── */
+.input-row { display: grid; gap: 12px; margin-bottom: 12px; }
+.row-vol   { grid-template-columns: 1fr 1fr 1fr; }
+.row-canal { grid-template-columns: 1fr 1fr; }
+.row-misc  { grid-template-columns: 1fr 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--gray); line-height: 1.3; }
+.field input, .field select {
+  font-size: 14px; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--gray-light); color: var(--text);
+  outline: none; transition: border-color .15s, box-shadow .15s, background .15s;
+  width: 100%; font-family: 'Inter', sans-serif;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--blue-mid); background: white;
+  box-shadow: 0 0 0 3px rgba(44,62,107,0.08);
+}
+.field input[readonly] {
+  background: var(--blue-light); color: var(--blue-deeper); font-weight: 700;
+  cursor: default; border-color: rgba(44,62,107,0.2);
+}
+.auto-badge { font-size: 10px; color: var(--gray); margin-top: 1px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0 1rem; }
+
+/* ── EQUIPMENT GRID ── */
+.equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.equip-box {
+  border-radius: 12px; border: 1px solid var(--border);
+  padding: 1.25rem; display: flex; flex-direction: column; gap: 10px;
+  border-top: 3px solid var(--border);
+}
+.equip-box.soporte { border-top-color: var(--blue); background: var(--blue-light); }
+.equip-box.baker   { border-top-color: var(--green); background: var(--green-light); }
+.equip-box.carrusel{ border-top-color: var(--purple); background: var(--purple-light); }
+.equip-color { width: 28px; height: 4px; border-radius: 2px; }
+.equip-box.soporte .equip-color { background: var(--blue); }
+.equip-box.baker   .equip-color { background: var(--green); }
+.equip-box.carrusel .equip-color { background: var(--purple); }
+.equip-name {
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 800;
+  color: var(--blue-deeper); letter-spacing: 0.3px;
+}
+.equip-box.baker   .equip-name { color: var(--green-dark); }
+.equip-box.carrusel .equip-name { color: var(--purple); }
+.equip-box input {
+  font-size: 16px; font-weight: 700; padding: 9px 12px;
+  border: 1.5px solid rgba(44,62,107,0.2); border-radius: 10px;
+  background: white; color: var(--text);
+  outline: none; width: 100%; font-family: 'Inter', sans-serif;
+  transition: border-color .15s, box-shadow .15s;
+}
+.equip-box input:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(44,62,107,0.08); }
+.equip-rec { font-size: 11px; color: var(--gray); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.min-badge {
+  display: inline-flex; align-items: center;
+  background: white; border: 1.5px solid var(--border); border-radius: 6px;
+  padding: 2px 9px; font-size: 13px; font-weight: 700; color: var(--blue-deeper);
+  transition: background .3s, color .3s, border-color .3s;
+}
+.min-badge.updated { background: var(--warning-bg); border-color: #FFE600; color: var(--warning-text); }
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+thead tr { background: var(--blue-deeper); }
+thead th {
+  padding: 12px 10px 14px; font-weight: 700; font-size: 12px;
+  color: white; text-align: center;
+  font-family: 'Raleway', sans-serif; letter-spacing: 0.5px;
+}
+thead th:first-child { text-align: left; width: 25%; }
+.th-equip { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.th-dot { width: 10px; height: 10px; border-radius: 50%; }
+.th-dot.blue   { background: var(--yellow-mid); }
+.th-dot.green  { background: #7FE0B4; }
+.th-dot.purple { background: #C9B3F5; }
+tbody tr:nth-child(even) { background: #FAFAFA; }
+tbody tr:hover { background: var(--blue-light); }
+tbody td {
+  padding: 10px 10px; border-bottom: 1px solid var(--border);
+  text-align: center; font-size: 14px;
+}
+tbody td:first-child { text-align: left; font-size: 12px; color: var(--gray); font-weight: 500; }
+tbody tr:last-child td { border-bottom: none; }
+.val {
+  display: inline-block; border-radius: 8px;
+  padding: 4px 12px; font-size: 13px; font-weight: 700; color: var(--text);
+}
+.val.best  { background: var(--success-bg); color: var(--success-text); }
+.val.worst { background: var(--warning-bg); color: var(--warning-text); }
+.val.na-val { color: var(--gray); font-size: 12px; font-weight: 400; background: none; }
+.fixed-val { display: inline-block; border-radius: 8px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+.fixed-best  { background: var(--success-bg); color: var(--success-text); }
+.fixed-worst { background: var(--warning-bg); color: var(--warning-text); }
+
+/* ── LEGEND ── */
+.legend { display: flex; gap: 20px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--gray); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* ── RECOMMENDATION ── */
+.recomendacion {
+  margin-top: 1.25rem; padding: 1.5rem 1.75rem;
+  background: var(--blue-deeper); border-radius: 12px;
+  text-align: center;
+}
+.rec-label {
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;
+}
+.rec-name {
+  font-family: 'Raleway', sans-serif;
+  font-size: clamp(20px, 3vw, 28px); font-weight: 900;
+  color: var(--yellow-mid); letter-spacing: 1px; line-height: 1.2;
+}
+.rec-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 6px; letter-spacing: 1px; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--yellow); border-top: 2px solid var(--yellow-dark);
+  padding: 1rem 2rem; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.footer-brand { font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue-deeper); }
+.footer-note { font-size: 12px; color: var(--blue-dark); opacity: 0.7; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .row-vol, .row-misc { grid-template-columns: 1fr 1fr; }
+  .row-canal { grid-template-columns: 1fr; }
+  .equip-grid { grid-template-columns: 1fr; }
+  .page-title { font-size: 22px; }
+}
+@media (max-width: 480px) {
+  .row-vol, .row-misc { grid-template-columns: 1fr; }
+  header { padding: 0 1rem; }
+  .logo-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <a class="logo" href="#" id="logo-link">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="6.5" r="3.5" fill="#F5E97A"/>
+        <path d="M2.5 17.5c0-4.142 3.358-7.5 7.5-7.5s7.5 3.358 7.5 7.5" stroke="#F5E97A" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">Mercado Libre</div>
+      <div class="logo-sub" id="logo-sub">Herramientas Internas</div>
+    </div>
+  </a>
+  <div class="header-right">
+    <a class="header-pill" id="back-link" href="#">‹ <span data-i18n="back-link">Inicio</span></a>
+    <a class="header-pill" id="lang-switch" href="#" onclick="switchLang(event)">🇧🇷 Português</a>
+    <span class="badge-header">MTM</span>
+  </div>
+</header>
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow">🎒 XD — Cross Docking</div>
+    <div class="page-title">Calculadora de Armado de Sacas</div>
+    <div class="page-subtitle" data-i18n="page-subtitle">Comparativa: Soporte · Baker · Carrusel</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main>
+<div class="container">
+
+  <!-- Parámetros -->
+  <div class="card">
+    <p class="sec-label" data-i18n="sec-params">Parámetros operativos</p>
+
+    <div class="input-row row-vol">
+      <div class="field">
+        <label for="volTotal" data-i18n="label-volTotal">Volumen diario total GM</label>
+        <input type="number" id="volTotal" value="81072" min="1">
+      </div>
+      <div class="field">
+        <label for="volSacas" data-i18n="label-volSacas">Volumen diario de sacas</label>
+        <input type="number" id="volSacas" value="10650" min="1">
+      </div>
+      <div class="field">
+        <label for="volManga" data-i18n="label-volManga">Volumen diario en manga</label>
+        <input type="number" id="volManga" readonly>
+        <span class="auto-badge" data-i18n="auto-calc">⟵ Calculado automáticamente</span>
+      </div>
+    </div>
+
+    <div class="input-row row-canal">
+      <div class="field">
+        <label for="cantCanal" data-i18n="label-cantCanal">Canalizaciones en manga</label>
+        <input type="number" id="cantCanal" value="22" min="1">
+      </div>
+      <div class="field">
+        <label for="cantCanalSacas" data-i18n="label-cantCanalSacas">Canalizaciones de sacas</label>
+        <input type="number" id="cantCanalSacas" value="20" min="1">
+      </div>
+    </div>
+
+    <div class="input-row row-misc">
+      <div class="field">
+        <label for="cantIslas" data-i18n="label-cantIslas">Islas en conveyor</label>
+        <input type="number" id="cantIslas" value="10" min="1">
+      </div>
+      <div class="field">
+        <label for="layout" data-i18n="label-layout">Layout</label>
+        <select id="layout">
+          <option value="1Flow2x2">1 Flow 2x2</option>
+          <option value="2Flows2x2" selected>2 Flows 2x2</option>
+          <option value="1Flow3x2">1 Flow 3x2</option>
+          <option value="2Flows3x2">2 Flows 3x2</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="posXIsla" data-i18n="label-posXIsla">Posiciones por isla</label>
+        <select id="posXIsla"></select>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="sec-label" data-i18n="sec-equip">Cantidades de equipamiento</p>
+
+    <div class="equip-grid">
+      <div class="equip-box soporte">
+        <div class="equip-color"></div>
+        <div class="equip-name" data-i18n="equip-soporte">Soporte de sacas</div>
+        <input type="number" id="cantSoporte" value="20" min="1">
+        <p class="equip-rec"><span data-i18n="equip-rec-label">Cantidad necesaria por MTM:</span> <span class="min-badge" id="min-soporte">10</span></p>
+      </div>
+      <div class="equip-box baker">
+        <div class="equip-color"></div>
+        <div class="equip-name" data-i18n="equip-baker">Baker de sacas</div>
+        <input type="number" id="cantBaker" value="6" min="1">
+        <p class="equip-rec"><span data-i18n="equip-rec-label">Cantidad necesaria por MTM:</span> <span class="min-badge" id="min-baker">4</span></p>
+      </div>
+      <div class="equip-box carrusel">
+        <div class="equip-color"></div>
+        <div class="equip-name" data-i18n="equip-carrusel">Carrusel</div>
+        <input type="number" id="cantCarrusel" value="4" min="1">
+        <p class="equip-rec"><span data-i18n="equip-rec-label">Cantidad necesaria por MTM:</span> <span class="min-badge" id="min-carrusel">4</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="card">
+    <p class="sec-label" data-i18n="sec-results">Resultados comparativos</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>KPI</th>
+            <th>
+              <div class="th-equip">
+                <div class="th-dot blue"></div>
+                <span data-i18n="equip-soporte">Soporte de sacas</span>
+              </div>
+            </th>
+            <th>
+              <div class="th-equip">
+                <div class="th-dot green"></div>
+                <span data-i18n="equip-baker">Baker de sacas</span>
+              </div>
+            </th>
+            <th>
+              <div class="th-equip">
+                <div class="th-dot purple"></div>
+                <span data-i18n="equip-carrusel">Carrusel</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="kpi-hc">HC total</td>
+            <td><span class="val" id="hc-s">—</span></td>
+            <td><span class="val" id="hc-b">—</span></td>
+            <td><span class="val" id="hc-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-paq-m2">PAQ / M²</td>
+            <td><span class="val" id="pm2-s">—</span></td>
+            <td><span class="val" id="pm2-b">—</span></td>
+            <td><span class="val" id="pm2-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-gnp">GNP (paq / hh)</td>
+            <td><span class="val" id="gnp-s">—</span></td>
+            <td><span class="val" id="gnp-b">—</span></td>
+            <td><span class="val" id="gnp-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-giro">Giro sacas / hora</td>
+            <td><span class="val" id="giro-s">—</span></td>
+            <td><span class="val" id="giro-b">—</span></td>
+            <td><span class="val" id="giro-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-inv">Inversión total (USD)</td>
+            <td><span class="val" id="inv-s">—</span></td>
+            <td><span class="val" id="inv-b">—</span></td>
+            <td><span class="val" id="inv-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-payback">Payback (años)</td>
+            <td><span class="val" id="pb-s">—</span></td>
+            <td><span class="val" id="pb-b">—</span></td>
+            <td><span class="val" id="pb-c">—</span></td>
+          </tr>
+          <tr>
+            <td data-i18n="kpi-ergo">Puntuación ergonómica</td>
+            <td><span class="fixed-val fixed-best">82 / 100</span></td>
+            <td><span class="fixed-val fixed-worst">74 / 100</span></td>
+            <td><span class="fixed-val fixed-best">82 / 100</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <div class="leg-item">
+        <div class="leg-dot" style="background:var(--success-text)"></div>
+        <span data-i18n="leg-best">Mejor valor</span>
+      </div>
+      <div class="leg-item">
+        <div class="leg-dot" style="background:var(--warning-text)"></div>
+        <span data-i18n="leg-worst">Peor valor</span>
+      </div>
+    </div>
+
+    <div class="recomendacion">
+      <p class="rec-label" data-i18n="rec-label">Equipamiento recomendado</p>
+      <p class="rec-name" id="rec-name">—</p>
+      <p class="rec-sub" id="rec-sub"></p>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-brand">Mercado Libre — MTM</div>
+  <div class="footer-note" data-i18n="footer-note">XD · Cross Docking · Los resultados se actualizan automáticamente.</div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   TRANSLATIONS
+═══════════════════════════════════════════════ */
+const T = {
+  es: {
+    'logo-sub':         'Herramientas Internas',
+    'lang-switch':      '🇧🇷 Português',
+    'back-link':        'Inicio',
+    'page-subtitle':    'Comparativa: Soporte · Baker · Carrusel',
+    'sec-params':       'Parámetros operativos',
+    'label-volTotal':   'Volumen diario total GM',
+    'label-volSacas':   'Volumen diario de sacas',
+    'label-volManga':   'Volumen diario en manga',
+    'auto-calc':        '⟵ Calculado automáticamente',
+    'label-cantCanal':  'Canalizaciones en manga',
+    'label-cantCanalSacas': 'Canalizaciones de sacas',
+    'label-cantIslas':  'Islas en conveyor',
+    'label-layout':     'Layout',
+    'label-posXIsla':   'Posiciones por isla',
+    'sec-equip':        'Cantidades de equipamiento',
+    'equip-soporte':    'Soporte de sacas',
+    'equip-baker':      'Baker de sacas',
+    'equip-carrusel':   'Carrusel',
+    'equip-rec-label':  'Cantidad necesaria por MTM:',
+    'sec-results':      'Resultados comparativos',
+    'kpi-hc':           'HC total',
+    'kpi-paq-m2':       'PAQ / M²',
+    'kpi-gnp':          'GNP (paq / hh)',
+    'kpi-giro':         'Giro sacas / hora',
+    'kpi-inv':          'Inversión total (USD)',
+    'kpi-payback':      'Payback (años)',
+    'kpi-ergo':         'Puntuación ergonómica',
+    'leg-best':         'Mejor valor',
+    'leg-worst':        'Peor valor',
+    'rec-label':        'Equipamiento recomendado',
+    'footer-note':      'XD · Cross Docking · Los resultados se actualizan automáticamente.',
+    /* rec-name strings */
+    'name-soporte':     'SOPORTE DE SACAS',
+    'name-baker':       'BAKER DE SACAS',
+    'name-carrusel':    'CARRUSEL',
+    /* rec-sub strings */
+    'rec-ind-s':        'INDICADOR',
+    'rec-ind-p':        'INDICADORES',
+    'rec-best-suf':     'CON EL MEJOR VALOR (INCLUYE ERGONOMÍA)',
+    'rec-tie-pre':      'EMPATE CON',
+    'rec-tie-suf':      'CADA UNO (INCLUYE ERGONOMÍA)',
+    /* back URL */
+    'main-url':         'https://mtmtransportes-paginainiciales.vercel.app/',
+    'locale':           'es-AR',
+    'html-lang':        'es',
+  },
+  pt: {
+    'logo-sub':         'Ferramentas Internas',
+    'lang-switch':      '🇪🇸 Español',
+    'back-link':        'Início',
+    'page-subtitle':    'Comparativo: Suporte · Baker · Carrossel',
+    'sec-params':       'Parâmetros operacionais',
+    'label-volTotal':   'Volume diário total GM',
+    'label-volSacas':   'Volume diário de sacas',
+    'label-volManga':   'Volume diário em manga',
+    'auto-calc':        '⟵ Calculado automaticamente',
+    'label-cantCanal':  'Canalizações em manga',
+    'label-cantCanalSacas': 'Canalizações de sacas',
+    'label-cantIslas':  'Ilhas no conveyor',
+    'label-layout':     'Layout',
+    'label-posXIsla':   'Posições por ilha',
+    'sec-equip':        'Quantidades de equipamento',
+    'equip-soporte':    'Suporte de sacas',
+    'equip-baker':      'Baker de sacas',
+    'equip-carrusel':   'Carrossel',
+    'equip-rec-label':  'Quantidade necessária por MTM:',
+    'sec-results':      'Resultados comparativos',
+    'kpi-hc':           'HC total',
+    'kpi-paq-m2':       'PAQ / M²',
+    'kpi-gnp':          'GNP (pct / hh)',
+    'kpi-giro':         'Giro sacas / hora',
+    'kpi-inv':          'Investimento total (USD)',
+    'kpi-payback':      'Payback (anos)',
+    'kpi-ergo':         'Pontuação ergonômica',
+    'leg-best':         'Melhor valor',
+    'leg-worst':        'Pior valor',
+    'rec-label':        'Equipamento recomendado',
+    'footer-note':      'XD · Cross Docking · Os resultados são atualizados automaticamente.',
+    /* rec-name strings */
+    'name-soporte':     'SUPORTE DE SACAS',
+    'name-baker':       'BAKER DE SACAS',
+    'name-carrusel':    'CARROSSEL',
+    /* rec-sub strings */
+    'rec-ind-s':        'INDICADOR',
+    'rec-ind-p':        'INDICADORES',
+    'rec-best-suf':     'COM O MELHOR VALOR (INCLUI ERGONOMIA)',
+    'rec-tie-pre':      'EMPATE COM',
+    'rec-tie-suf':      'CADA UM (INCLUI ERGONOMIA)',
+    /* back URL */
+    'main-url':         'https://mtmtransportes-paginainicialpt.vercel.app/',
+    'locale':           'pt-BR',
+    'html-lang':        'pt-BR',
+  }
+};
+
+/* ═══════════════════════════════════════════════
+   LANGUAGE SWITCHING
+═══════════════════════════════════════════════ */
+let currentLang = 'es';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = T[lang];
+  document.documentElement.lang = t['html-lang'];
+
+  /* header elements */
+  document.getElementById('logo-sub').textContent  = t['logo-sub'];
+  document.getElementById('lang-switch').textContent = t['lang-switch'];
+  const backLink = document.getElementById('back-link');
+  backLink.href = t['main-url'];
+  document.getElementById('logo-link').href = t['main-url'];
+
+  /* all data-i18n elements */
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  /* re-run recommendation with new names */
+  updateRecomendacion();
+}
+
+function switchLang(e) {
+  e.preventDefault();
+  setLang(currentLang === 'es' ? 'pt' : 'es');
+}
+
+function detectLang() {
+  const param = new URLSearchParams(window.location.search).get('lang');
+  if (param === 'es' || param === 'pt') return param;
+  const ref = (document.referrer || '').toLowerCase();
+  if (ref.includes('paginainiciales') || ref.includes('-es.') || ref.includes('/es/')) return 'es';
+  if (ref.includes('paginainicialpt') || ref.includes('-pt.') || ref.includes('/pt/')) return 'pt';
+  return (navigator.language || '').toLowerCase().startsWith('pt') ? 'pt' : 'es';
+}
+
+/* ═══════════════════════════════════════════════
+   CALCULATOR LOGIC (unchanged)
+═══════════════════════════════════════════════ */
+const LAYOUT_OPTIONS = {'1Flow2x2':[2,4,6],'2Flows2x2':[6,8],'1Flow3x2':[2,4,6,8],'2Flows3x2':[6,8,10,12,14]};
+const SACAS_POR = {soporte:2, baker:6, carrusel:6};
+const minActual = {soporte:10, baker:4, carrusel:4};
+const ERGONOMIA = {soporte:82, baker:74, carrusel:82};
+
+function updateVolManga() {
+  const vT = parseFloat(document.getElementById('volTotal').value)||0;
+  const vS = parseFloat(document.getElementById('volSacas').value)||0;
+  document.getElementById('volManga').value = Math.max(0, vT - vS);
+}
+
+function updateMinimos() {
+  const cs = parseInt(document.getElementById('cantCanalSacas').value)||0;
+  ['soporte','baker','carrusel'].forEach(t => {
+    const nuevoMin = Math.ceil(cs / SACAS_POR[t]);
+    const el = document.getElementById('min-'+t);
+    if (nuevoMin !== minActual[t]) {
+      el.textContent = nuevoMin;
+      minActual[t] = nuevoMin;
+      el.classList.add('updated');
+      setTimeout(()=>el.classList.remove('updated'), 1500);
+    }
+  });
+}
+
+function updatePosiciones() {
+  const layout = document.getElementById('layout').value;
+  const sel = document.getElementById('posXIsla');
+  const current = parseInt(sel.value);
+  const opts = LAYOUT_OPTIONS[layout]||[];
+  sel.innerHTML = '';
+  opts.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    if (v === current) o.selected = true;
+    sel.appendChild(o);
+  });
+  calc();
+}
+
+const K = {sacasS:2,sacasB:6,sacasC:6,sppS:30,sppB:25,sppC:30,pInd:845,pPesca:502,pIslaS:418.3,pIslaB:405.4,pCarrStation:384,pMangaS:424.4,pMangaB:424.4,pMangaC:424,pAsIs:371.1,cPersona:13889,prS:250,prB:650,prC:2400,hs:8,m2S:25.0,m2B:24.72,m2C:25.82};
+const scores = {soporte:0,baker:0,carrusel:0};
+
+function highlight(ids, vals, dir, fmt, keys) {
+  const fin = vals.map(v=>(v===null||typeof v!=='number'||isNaN(v))?null:v);
+  const num = fin.filter(v=>v!==null);
+  const minV = num.length?Math.min(...num):null, maxV = num.length?Math.max(...num):null;
+  const allSame = minV===maxV;
+  ids.forEach((id,i) => {
+    const el = document.getElementById(id), v = fin[i];
+    if (v===null) { el.textContent='N/A'; el.className='val na-val'; return; }
+    el.textContent = fmt(v);
+    let cls = 'val';
+    if (!allSame) {
+      if (v===(dir==='lower'?minV:maxV)) { cls+=' best'; scores[keys[i]]++; }
+      else if (v===(dir==='lower'?maxV:minV)) cls+=' worst';
+    }
+    el.className = cls;
+  });
+}
+
+function applyErgonomiaScore() {
+  const vals = [ERGONOMIA.soporte, ERGONOMIA.baker, ERGONOMIA.carrusel];
+  const maxE = Math.max(...vals), minE = Math.min(...vals);
+  if (maxE !== minE) {
+    if (ERGONOMIA.soporte===maxE) scores.soporte++;
+    if (ERGONOMIA.baker===maxE)   scores.baker++;
+    if (ERGONOMIA.carrusel===maxE)scores.carrusel++;
+  }
+}
+
+function updateRecomendacion() {
+  const t = T[currentLang];
+  const maxScore = Math.max(scores.soporte,scores.baker,scores.carrusel);
+  const winners = Object.keys(scores).filter(k=>scores[k]===maxScore);
+  const recName = document.getElementById('rec-name');
+  const recSub  = document.getElementById('rec-sub');
+  if (winners.length===1) {
+    recName.textContent = t['name-'+winners[0]];
+    recSub.textContent  = maxScore+' '+(maxScore!==1?t['rec-ind-p']:t['rec-ind-s'])+' '+t['rec-best-suf'];
+  } else {
+    recName.textContent = winners.map(w=>t['name-'+w]).join(' · ');
+    recSub.textContent  = t['rec-tie-pre']+' '+maxScore+' '+(maxScore!==1?t['rec-ind-p']:t['rec-ind-s'])+' '+t['rec-tie-suf'];
+  }
+}
+
+function calc() {
+  scores.soporte=0; scores.baker=0; scores.carrusel=0;
+  const g = id => parseFloat(document.getElementById(id).value)||0;
+  const vT=g('volTotal'), vS=g('volSacas'), nI=Math.max(g('cantIslas'),1);
+  const nSop=g('cantSoporte'), nBak=g('cantBaker'), nCar=g('cantCarrusel');
+  const ph=vT/K.hs, phs=vS/K.hs;
+  const hInd=Math.round(ph/K.pInd), hPesca=Math.round(ph/K.pPesca);
+  const hcS=hInd+hPesca+Math.round(ph/K.pIslaS)+Math.round(ph/K.pMangaS);
+  const hcB=hInd+hPesca+Math.round(ph/K.pIslaB)+Math.round(ph/K.pMangaB);
+  const hcC=hInd+hPesca+Math.round(ph/K.pCarrStation)+Math.round(ph/K.pMangaC);
+  const hcAI=hInd+hPesca+Math.round(ph/K.pAsIs)+Math.round(ph/K.pMangaS);
+  const gnpS=hcS>0?Math.round(ph/hcS):0, gnpB=hcB>0?Math.round(ph/hcB):0, gnpC=hcC>0?Math.round(ph/hcC):0;
+  const giroS=nSop*K.sacasS>0?phs/(nSop*K.sacasS*K.sppS):0;
+  const giroB=nBak*K.sacasB>0?phs/(nBak*K.sacasB*K.sppB):0;
+  const giroC=nCar*K.sacasC>0?phs/(nCar*K.sacasC*K.sppC):0;
+  const invS=nSop*K.prS, invB=nBak*K.prB, invC=nCar*K.prC;
+  const pbS=(hcAI-hcS)*K.cPersona>0?invS/((hcAI-hcS)*K.cPersona):null;
+  const pbB=(hcAI-hcB)*K.cPersona>0?invB/((hcAI-hcB)*K.cPersona):null;
+  const pbC=(hcAI-hcC)*K.cPersona>0?invC/((hcAI-hcC)*K.cPersona):null;
+  const pm2S=ph/(nI*K.m2S), pm2B=ph/(nI*K.m2B), pm2C=ph/(nI*K.m2C);
+  const locale = T[currentLang]['locale'];
+  const K3 = ['soporte','baker','carrusel'];
+  highlight(['hc-s','hc-b','hc-c'],[hcS,hcB,hcC],'lower',v=>v,K3);
+  highlight(['pm2-s','pm2-b','pm2-c'],[pm2S,pm2B,pm2C],'higher',v=>v.toFixed(1),K3);
+  highlight(['gnp-s','gnp-b','gnp-c'],[gnpS,gnpB,gnpC],'higher',v=>v,K3);
+  highlight(['giro-s','giro-b','giro-c'],[giroS,giroB,giroC],'lower',v=>v.toFixed(1),K3);
+  highlight(['inv-s','inv-b','inv-c'],[invS,invB,invC],'lower',v=>'$'+v.toLocaleString(locale),K3);
+  highlight(['pb-s','pb-b','pb-c'],[pbS,pbB,pbC],'lower',v=>v.toFixed(2),K3);
+  applyErgonomiaScore();
+  updateRecomendacion();
+}
+
+/* ═══════════════════════════════════════════════
+   EVENTS
+═══════════════════════════════════════════════ */
+document.getElementById('volTotal').addEventListener('input', ()=>{ updateVolManga(); calc(); });
+document.getElementById('volSacas').addEventListener('input', ()=>{ updateVolManga(); calc(); });
+document.getElementById('cantCanalSacas').addEventListener('input', ()=>{ updateMinimos(); calc(); });
+document.getElementById('layout').addEventListener('change', updatePosiciones);
+document.getElementById('posXIsla').addEventListener('change', calc);
+document.querySelectorAll('input:not(#volTotal):not(#volSacas):not(#cantCanalSacas):not(#volManga),select:not(#layout):not(#posXIsla)')
+  .forEach(el => el.addEventListener('input', calc));
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+setLang(detectLang());
+updateVolManga();
+updatePosiciones();
+</script>
+</body>
+</html>
